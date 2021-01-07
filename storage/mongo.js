@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = void 0;
 var mongodb_1 = require("mongodb");
-var url = "mongodb+srv://Ilya:mongo12345@cluster0.fsbsa.mongodb.net/StartUp?retryWrites=true&w=majority";
+var url = "mongodb+srv://Ilya:mongo12345@cluster0.fsbsa.mongodb.net/?retryWrites=true&w=majority";
 var dbName = 'StartUp';
 var collectioName = 'song';
 var getMongoInstance = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -73,7 +73,7 @@ var create = function (item) { return __awaiter(void 0, void 0, void 0, function
                 return [4 /*yield*/, collection.insertOne(item)];
             case 2:
                 response = _a.sent();
-                return [2 /*return*/, response.ops[0]];
+                return [2 /*return*/, response];
         }
     });
 }); };

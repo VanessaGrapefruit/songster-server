@@ -1,7 +1,7 @@
 import {Collection, MongoClient} from 'mongodb';
 
 
-const url = `mongodb+srv://Ilya:mongo12345@cluster0.fsbsa.mongodb.net/StartUp?retryWrites=true&w=majority`;
+const url = `mongodb+srv://Ilya:mongo12345@cluster0.fsbsa.mongodb.net/?retryWrites=true&w=majority`;
 const dbName = 'StartUp';
 const collectioName = 'song';
 
@@ -23,7 +23,7 @@ const create = async (item) => {
 
     const response = await  collection.insertOne(item);
 
-    return response.ops[0];
+    return response;
 };
 
 
