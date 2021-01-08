@@ -1,41 +1,38 @@
 import { Duration, Clef, Size, Touch, NoteName, Alteration } from './Notations';
 
-export interface Song {
-    Tracks: Track[];
+export interface SongDisplay {
+    Tracks: TrackDisplay[];
     Name: string;
     Author: string;
     Difficulty: number;
 }
 
-export interface Track {
+export interface TrackDisplay {
     Instrument: string;
     Name?: string;
     Author?: string;
-    Sections: Section[];
-}
-
-export interface Section {
+    
     Bpm: number;
     Key: NoteName;
     Clef: Clef;
     Size: Size;  //number of beats per measure
-    Measures: Measure[];
+    Measures: MeasureDisplay[];
 }
 
-export interface Measure {
-    Id: number;
-    Time: number;
-    Notes: Chord[];  // sum of all notes durations must be equal to size!!!
+export interface MeasureDisplay {
+    Id?: number;
+    Time?: number;
+    Chords: ChordDisplay[];  // sum of all notes durations must be equal to size!!!
 }
 
-export interface Chord {
+export interface ChordDisplay {
     Name?:string;
-    Notes: Note[];
+    Notes: NoteDisplay[];
 }
 
-export interface Note {
-    Name?: NoteName;
-    Alteration: Alteration;
+export interface NoteDisplay {
+    Name: NoteName;
+    Alteration?: Alteration;
     Octave?: number;
     Duration: Duration;
     IsDotted: boolean;
