@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const InstrumentSchema = new Schema({
     name: {type: String, required: true},
-    songs: [{type: Schema.Types.ObjectId, ref: 'song'}]
+    songs: [{type: Schema.Types.ObjectId, ref: 'Song'}]
 });
 
 InstrumentSchema

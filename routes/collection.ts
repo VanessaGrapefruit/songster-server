@@ -1,6 +1,6 @@
 import {Router} from "express";
-// import * as storage from '../storage/mongo';
-// import {v4 as uuid} from 'uuid';
+import * as storage from '../storage/mongo';
+import {v4 as uuid} from 'uuid';
 
 const author_controller = require('../controllers/authorController');
 const song_controller = require('../controllers/songController');
@@ -11,7 +11,9 @@ const router = Router();
 
 router.get('/songs', song_controller.songs_list);
 
-router.get('/songs/:id', song_controller.song);
+router.get('/songs/:id', song_controller.song_find);
+
+router.post('/songs/:id', song_controller.songAdd);
 
 router.get('/authors', author_controller.authors_list);
 
@@ -29,9 +31,8 @@ router.get('/instruments/:id', instrument_controller.instrument_songs);
 //   const id = uuid();
 //   const { body } = req;
 //   body.id = id;
-//   // const newBody = await storage.create(body);
-//   // res.json(newBody);
-//   res.send(['123'])
+//   const newBody = await storage.create(body);
+//   res.json(newBody);
 // });
 
 export default router;
