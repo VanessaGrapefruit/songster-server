@@ -8,4 +8,4 @@ const GenreSchema = new Schema({
     userProfile: {type: Schema.Types.ObjectId, ref: 'UserProfile'}
 });
 
-module.exports = mongoose.model('Genre', GenreSchema);
+module.exports = mongoose.model('User', GenreSchema);

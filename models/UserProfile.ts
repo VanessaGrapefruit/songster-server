@@ -5,4 +5,4 @@ const GenreSchema = new Schema({
     favoriteSongs: [{type: Schema.Types.ObjectId, ref: 'song'}]
 });
 
-module.exports = mongoose.model('Genre', GenreSchema);
+module.exports = mongoose.model('UserProfile', GenreSchema);

@@ -17,4 +17,4 @@ SongSchema
         return '/song/' + this._id;
     });
 
-module.exports = mongoose.model('Genre', SongSchema);
+module.exports = mongoose.model('Song', SongSchema);

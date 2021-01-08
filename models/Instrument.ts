@@ -12,4 +12,4 @@ InstrumentSchema
         return '/song/instrument' + this._id;
     });
 
-module.exports = mongoose.model('Genre', InstrumentSchema);
+module.exports = mongoose.model('Instrument', InstrumentSchema);
