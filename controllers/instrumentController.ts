@@ -1,4 +1,4 @@
-const Instrument = require('../models/Instrument');
+// const Instrument = require('../models/Instrument');
 
 exports.instruments_list = function(req, res) {
 };

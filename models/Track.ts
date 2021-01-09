@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const TrackSchema = new Schema({
     name: {type: String, required: true},
     player: String,
-    midi: [{type: Object, required: true}],
+    midi: {type: Object, required: true},
     instrument: String
 });
 

@@ -33,8 +33,7 @@ mongoose
         console.log(`DB Connection Error: ${err.message}`);
     });
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
