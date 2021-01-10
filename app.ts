@@ -4,7 +4,6 @@ import * as logger from "morgan";
 import collectionRouter from "./routes/collection";
 import userRouter from "./routes/user";
 import * as mongoose from 'mongoose'
-const Song = require('./models/Song');
 
 const app = express();
 

@@ -1,20 +1,17 @@
 const Song = require('../models/Song');
-const Genre = require('../models/Genre');
-const Instrument = require('../models/Instrument');
 const Author = require('../models/Author');
-const Track = require('../models/Track');
 
-function createItemIfNotExist(model, modelObj): void {
-    model.findOne({name: modelObj.name}, function(err, mod){
-        if(err) console.log(err);
-        if (!mod){
-            new model(modelObj).save();
+function saveItemIfNotExist(model, modelObj, modVar): void {
+    model.findOne({name: modelObj.name}, function (err, mod) {
+        if (err) console.log(err);
+        if (!mod) {
+            modVar.save();
         }
     });
-};
+}
 
-exports.songs_list = function(req, res): void {
-    Song.find({}, function(err, result) {
+exports.songs_list = function (req, res): void {
+    Song.find({}, function (err, result) {
         if (err) {
             console.log(err);
         } else {
@@ -23,9 +20,9 @@ exports.songs_list = function(req, res): void {
     });
 };
 
-exports.song_find = function(req, res): void {
+exports.song_find = function (req, res): void {
     const param = req.body;
-    Song.findOne(param, function(err, result) {
+    Song.findOne(param, function (err, result) {
         if (err) {
             console.log(err);
         } else {
@@ -34,46 +31,56 @@ exports.song_find = function(req, res): void {
     });
 };
 
-exports.songAdd = function(req, res) {
-
-    const songObj = {
-        name: req.body.name,
-        author: req.body.author,
-        difficulty: req.body.difficulty,
-        text: req.body.difficulty
-    };
+exports.songAdd = function (req, res) {
 
     const trackObj = {
         name: req.body.track,
         player: req.body.player,
         midi: req.body.midi,
-        instrument: req.body.midi
+        instrument: req.body.instrument
     };
 
-    const genreObj = {
-        name: req.body.genre,
-    };
-
-    const instrumentObj = {
-        name: req.body.instrument,
-    };
-
-    const authorObj = {
+    let authorObj = {
         name: req.body.author,
+        genre: req.body.genre
     };
 
-    createItemIfNotExist(Song, songObj);
-    createItemIfNotExist(Author, authorObj);
-    createItemIfNotExist(Track, trackObj);
-    createItemIfNotExist(Genre, genreObj);
-    createItemIfNotExist(Instrument, instrumentObj);
+    const newAuthor = new Author(authorObj);
 
-    Author.
-    findOne({ 'Author.name': 'Валентин стрыкало' }).
-    populate('songs').
-    exec();
+    let songObj = {
+        name: req.body.name,
+        author: req.body.author,
+        authorId: newAuthor._id,
+        difficulty: req.body.difficulty,
+        text: req.body.difficulty,
+        genre: req.body.genre,
+        instrument: req.body.instrument
+    };
 
-    res.send(req.body)
+    const newSong = new Song(songObj)
+    saveItemIfNotExist(Song, songObj, newSong);
 
+    Author.findOne({name: authorObj.name},function (err, mod) {
+        if (mod && mod._id !== songObj.authorId) {
+            Song.findOneAndUpdate({name: songObj.name}, { $set : { authorId: mod._id } }, {new: true}, function (err, doc) {
+                console.log(doc)
+            });
+        }
+    })
+
+
+
+    Song.find({author: authorObj.name}, function (err, mod) {
+        newAuthor.songs.push(newSong._id)
+        const ids = mod.map(el => el._id)
+        saveItemIfNotExist(Author, authorObj, newAuthor)
+        Author.findOneAndUpdate({name: authorObj.name}, { $addToSet: { songs: [...ids] } }, {new: true}, function (err, doc) {
+            console.log(doc)
+        });
+    });
+
+
+
+    res.send(req.body);
 };
 

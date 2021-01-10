@@ -1,4 +1,15 @@
-// const Genre = require('../models/Genre');
+const Genre = require('../models/Genre');
+
+enum GenreList {
+    Rock,
+    Rap,
+    Pop,
+    Metal,
+    Jazz,
+    Electronic,
+    Latin,
+    Country
+}
 
 exports.genres_list = function(req, res) {
     res.send('NOT IMPLEMENTED: Genre list');
