@@ -10,6 +10,8 @@ export class TrackConverter {
     private size: Size;
     private Measures: MeasureDisplay[];
     private measureDurationTicks: number;
+    private tickDuration: number;
+    private measureDuration: number;
 
     constructor(track: Track,bpm: number,timeSignature: number[],ppq: number) {
         this.track = track;
@@ -21,16 +23,19 @@ export class TrackConverter {
         }
         this.Measures = [];
         this.measureDurationTicks = 4 * this.ppq * this.size.Count / this.size.Per;
+        this.tickDuration = 60000 / (this.bpm * this.ppq);
+        this.measureDuration = this.measureDurationTicks * this.tickDuration;
     }
 
     convert() : TrackDisplay {
         const notes = this.track.notes;
         return {
             Instrument: this.track.instrument.name,
+            //Name: this.track.name,
             Bpm: this.bpm,
             Size: this.size,
             Key: NoteName.C,
-            Clef: Clef.Treble,
+            Clef: this.getClef(this.track.notes),
             Measures: this.convertNotes(notes)
         }
     }
@@ -81,13 +86,15 @@ export class TrackConverter {
             alteration : Alteration | undefined,
             octave : number;
         ({name, alteration, octave} = this.getNoteFromName(note.name));
+        const noteDuration = this.getNoteDuration(note.durationTicks);
+        const isDotted = noteDuration.toString().includes('d');
         return {
             Name: name,
             Alteration: alteration,
             Octave: octave,
-            Duration: this.getNoteDuration(note.durationTicks),
+            Duration: noteDuration,
             IsPause: false,
-            IsDotted: false
+            IsDotted : isDotted,
         }
     }
 
@@ -98,7 +105,7 @@ export class TrackConverter {
     getEmptyMeasure(id:number) : MeasureDisplay {
         return {
             Id: id,
-            Time: id*this.measureDurationTicks,
+            Time: id*this.measureDuration,
             Chords: []
         }
     }
@@ -131,5 +138,17 @@ export class TrackConverter {
         const alteration = arr.length === 3 ? Alteration['#'] : undefined;
         const octave = arr.length === 3 ? +arr[2] : +arr[1];
         return {name,alteration,octave}
+    }
+
+    getClef(notes: Note[]) : Clef {
+        const obj = {}
+        for (const note of notes) {
+            const octave = note.name.slice(-1);
+            obj[octave] = obj[octave] ? obj[octave] + 1 : 1;
+        }
+        const octave = +Object.keys(obj).reduce( (a,b) => obj[a] > obj[b] ? a : b);
+        
+        if (octave < 4) return Clef.Bass;
+        return Clef.Treble;
     }
 }

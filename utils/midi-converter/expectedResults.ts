@@ -8,7 +8,7 @@ const cmajorTrack : TrackDisplay = {
         Count: 4,
         Per: 4
     },
-    Clef: Clef.Treble,
+    Clef: Clef.Bass,
     Key: NoteName.C,
     Measures: [
         {
@@ -67,7 +67,7 @@ const cmajorTrack : TrackDisplay = {
         },
         {
             Id: 1,
-            Time: 1536,
+            Time: 2000,
             Chords: [
                 {
                     Notes: [
@@ -129,7 +129,7 @@ const paused : TrackDisplay = {
         Count: 4,
         Per: 4
     },
-    Clef: Clef.Treble,
+    Clef: Clef.Bass,
     Key: NoteName.C,
     Measures: [
         {
@@ -236,7 +236,7 @@ const paused : TrackDisplay = {
         },
         {
             Id: 1,
-            Time: 1536,
+            Time: 2000,
             Chords: [
                 {
                     Notes: [
@@ -298,7 +298,7 @@ const pausedStart : TrackDisplay = {
         Count: 4,
         Per: 4
     },
-    Clef: Clef.Treble,
+    Clef: Clef.Bass,
     Key: NoteName.C,
     Measures: [
         {
@@ -389,7 +389,7 @@ const chord : TrackDisplay = {
         Count: 4,
         Per: 4
     },
-    Clef: Clef.Treble,
+    Clef: Clef.Bass,
     Key: NoteName.C,
     Measures: [
         {
@@ -429,4 +429,71 @@ const chord : TrackDisplay = {
     ]
 }
 
-export { cmajorTrack, paused, pausedStart, chord }
+const dotted : TrackDisplay = {
+    Instrument: "acoustic grand piano",
+    Bpm: 120,
+    Size: {
+        Count: 4,
+        Per: 4
+    },
+    Clef: Clef.Bass,
+    Key: NoteName.C,
+    Measures: [
+        {
+            Id: 0,
+            Time: 0,
+            Chords: [
+                {
+                    Notes: [
+                        {
+                            Name: NoteName.C,
+                            Alteration: undefined,
+                            Octave: 3,
+                            IsDotted: true,
+                            Duration: Duration.QuarterWithDot,
+                            IsPause: false,
+                        }
+                    ]
+                },
+                {
+                    Notes: [
+                        {
+                            Name: NoteName.E,
+                            Alteration: undefined,
+                            Octave: 3,
+                            IsDotted: true,
+                            Duration: Duration.EighthWithDot,
+                            IsPause: false,
+                        }
+                    ]
+                },
+                {
+                    Notes: [
+                        {
+                            Name: NoteName.G,
+                            Alteration: undefined,
+                            Octave: 3,
+                            IsDotted: false,
+                            Duration: Duration.Sixteen,
+                            IsPause: false,
+                        }
+                    ]
+                },
+                {
+                    Notes: [
+                        {
+                            Name: NoteName.C,
+                            Alteration: undefined,
+                            Octave: 4,
+                            IsDotted: true,
+                            Duration: Duration.QuarterWithDot,
+                            IsPause: false,
+                        }
+                    ]
+                },
+            ]
+        }
+    ]
+}
+
+export { cmajorTrack, paused, pausedStart, chord, dotted }

@@ -2,7 +2,7 @@ import { TrackConverter } from './trackConverter';
 import * as assert from 'assert';
 import * as fs from 'fs';
 import { MidiConverter } from './midiConverter';
-import { chord, cmajorTrack, paused, pausedStart } from './expectedResults';
+import { chord, cmajorTrack, dotted, paused, pausedStart } from './expectedResults';
 import { Alteration, Duration, NoteName } from '../../models/Notations';
 
 describe('Track converter tests',function() {
@@ -73,5 +73,15 @@ describe('Track converter tests',function() {
 
         const result = trackConverter.convert();
         assert.deepEqual(result, chord);
+    });
+
+    it('should add dots to notes', function() {
+        midiData = fs.readFileSync(__dirname + '/midi/dotted.mid');
+        midiConverter = new MidiConverter(midiData);
+        track = midiConverter.getTrack(0);
+        trackConverter = new TrackConverter(track,120,[4,4],384);
+
+        const result = trackConverter.convert();
+        assert.deepEqual(result, dotted);
     });
 });
