@@ -1,4 +1,4 @@
-const Instrument = require('../models/Instrument');
+import Song from '../models/Song';
 
 enum InstrumentList {
     Guitar,
@@ -6,16 +6,13 @@ enum InstrumentList {
     Bass
 }
 
-exports.instruments_list = function(req, res) {
-};
-
 exports.instrument_songs = function(req, res) {
     const param = req.body.instrument;
-    // Song.find(param, function(err, result) {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         res.json(result);
-    //     }
-    // });
+    Song.find({instrument: param}, function(err, result): void {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(result);
+        }
+    });
 };

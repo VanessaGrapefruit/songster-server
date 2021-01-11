@@ -1,5 +1,5 @@
-const Song = require('../models/Song');
-const Author = require('../models/Author');
+import Song from '../models/Song';
+const Author = require('../models/Author'); // Ломает newAuthor.songs если поменять на импорт
 
 function saveItemIfNotExist(model, modelObj, modVar): void {
     model.findOne({name: modelObj.name}, function (err, mod) {
@@ -21,8 +21,7 @@ exports.songs_list = function (req, res): void {
 };
 
 exports.song_find = function (req, res): void {
-    const param = req.body;
-    Song.findOne(param, function (err, result) {
+    Song.findOne({name: req.body.name, author: req.body.author}, function (err, result) {
         if (err) {
             console.log(err);
         } else {
@@ -31,14 +30,7 @@ exports.song_find = function (req, res): void {
     });
 };
 
-exports.songAdd = function (req, res) {
-
-    const trackObj = {
-        name: req.body.track,
-        player: req.body.player,
-        midi: req.body.midi,
-        instrument: req.body.instrument
-    };
+exports.songAdd = async function(req, res) {
 
     let authorObj = {
         name: req.body.author,
@@ -60,26 +52,25 @@ exports.songAdd = function (req, res) {
     const newSong = new Song(songObj)
     saveItemIfNotExist(Song, songObj, newSong);
 
-    Author.findOne({name: authorObj.name},function (err, mod) {
+    const lastAuthor = await Author.find({}).sort({_id:-1}).limit(1);
+    console.log(lastAuthor);
+
+    Author.findOne({name: authorObj.name},function (err, mod): void {
         if (mod && mod._id !== songObj.authorId) {
-            Song.findOneAndUpdate({name: songObj.name}, { $set : { authorId: mod._id } }, {new: true}, function (err, doc) {
-                console.log(doc)
+            Song.updateMany({author: songObj.author}, { $set : { authorId: mod._id } }, {new: true}, function (err, doc) {
+                // console.log(doc);
             });
         }
     })
 
-
-
-    Song.find({author: authorObj.name}, function (err, mod) {
+    Song.find({author: authorObj.name}, function (err, mod): void {
         newAuthor.songs.push(newSong._id)
         const ids = mod.map(el => el._id)
         saveItemIfNotExist(Author, authorObj, newAuthor)
         Author.findOneAndUpdate({name: authorObj.name}, { $addToSet: { songs: [...ids] } }, {new: true}, function (err, doc) {
-            console.log(doc)
+            // console.log(doc);
         });
     });
-
-
 
     res.send(req.body);
 };

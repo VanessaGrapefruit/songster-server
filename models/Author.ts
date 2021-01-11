@@ -13,4 +13,6 @@ AuthorSchema
         return '/song/author/' + this._id;
     });
 
-module.exports = mongoose.model('Author', AuthorSchema);
+const Author = mongoose.model('Author', AuthorSchema);
+
+export default Author;

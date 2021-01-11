@@ -1,4 +1,4 @@
-const Genre = require('../models/Genre');
+import Song from '../models/Song';
 
 enum GenreList {
     Rock,
@@ -11,10 +11,13 @@ enum GenreList {
     Country
 }
 
-exports.genres_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre list');
-};
-
-exports.genre_songs = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre detail: ' + req.params.id);
+exports.genre_songs = function(req, res): void {
+    const param = req.body.genre;
+    Song.find({genre: param}, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(result);
+        }
+    });
 };

@@ -6,7 +6,7 @@ const SongSchema = new Schema({
     author: {type: String, required: true},
     authorId: {type: Schema.Types.ObjectId, ref: 'Author'},
     genre: {type: String, required: true},
-    difficulty: {type: Number, required: true},
+    difficulty: {type: String, required: true},
     instrument: {type: String, required: true},
     tracks: [{type: Object, ref: 'Track'}],
     text: String
@@ -18,4 +18,6 @@ SongSchema
         return '/song/' + this._id;
     });
 
-module.exports = mongoose.model('Song', SongSchema);
+const Song = mongoose.model('Song', SongSchema);
+
+export default Song;

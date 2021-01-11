@@ -1,5 +1,4 @@
 import {Router} from "express";
-import * as storage from '../storage/mongo'
 
 const router = Router();
 
