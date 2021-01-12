@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors';
 import * as path from "path";
 import logger from "morgan";
 import collectionRouter from "./routes/collection";
@@ -6,6 +7,9 @@ import userRouter from "./routes/user";
 import mongoose from 'mongoose'
 
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:8080'
+}));
 
 // шаблонизатор (можно будет выбрать другой)
 app.set('views', path.join(__dirname, 'views'));

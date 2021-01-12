@@ -1,5 +1,4 @@
 import { Midi, Track } from '@tonejs/midi';
-import { midi } from '../../controllers/homeController';
 import { SongDisplay, TrackDisplay } from '../../models/TrackDisplayType';
 import { TrackConverter } from './trackConverter';
 
