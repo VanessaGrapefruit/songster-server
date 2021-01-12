@@ -5,20 +5,19 @@
     "scripts": {
         "start": "nodemon bin/www.ts",
         "build": "tsc",
-        "test": "mocha -r ts-node/register utils/midi-converter/trackConverter.test.ts",
+        "test": "mocha -r ts-node/register utils/midi-converter/trackConverter.test.ts"
     },
     "dependencies": {
-        "synth-js": "^0.1.2",
-        "ts-loader": "^8.0.14",
         "async": "^3.2.0",
         "debug": "~2.6.9",
         "express": "~4.16.1",
         "http-errors": "~1.6.3",
         "jade": "~1.11.0",
+        "midi-file": "^1.1.2",
         "mongodb": "^3.6.3",
         "mongoose": "^5.11.10",
         "morgan": "~1.9.1",
-        "uuid": "^8.3.2"
+        "synth-js": "^0.1.2"
     },
     "devDependencies": {
         "@types/mocha": "^8.2.0",

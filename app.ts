@@ -1,9 +1,9 @@
-import * as express from "express";
+import express from "express";
 import * as path from "path";
-import * as logger from "morgan";
+import logger from "morgan";
 import collectionRouter from "./routes/collection";
 import userRouter from "./routes/user";
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 
 const app = express();
 

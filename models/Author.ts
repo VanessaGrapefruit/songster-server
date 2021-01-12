@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const AuthorSchema = new Schema({
     name: {type: String, required: true},
-    songs: [{type: Schema.Types.ObjectId, ref: 'Song'}],
     genre: {type: String, required: true}
 });
 

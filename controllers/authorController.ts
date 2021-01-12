@@ -12,19 +12,11 @@ exports.authors_list = function(req, res): void {
 };
 
 exports.author_songs = function(req, res): void {
-    Author.findOne({name: req.body.author}, function (err, result) {
+    Song.find({author: req.body.author}, function (err, result) {
         if (err) {
             throw new Error(err);
         } else {
-            const resArray = [];
-            result.songs.forEach(songId => {
-                Song.findById(songId, function (err, song) {
-                    resArray.push(song);
-                    if(resArray.length === result.songs.length) {
-                        res.send(resArray);
-                    }
-                });
-            });
+            res.send(result)
         }
     })
 };

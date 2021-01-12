@@ -12,7 +12,7 @@ router.get('/songs/', song_controller.songs_list);
 
 router.get('/songs/:id', song_controller.song_find);
 
-router.post('/songs/', song_controller.songAdd);
+router.post('/song-add/', song_controller.songAdd);
 
 router.get('/authors/', author_controller.authors_list);
 
