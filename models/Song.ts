@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const SongSchema = new Schema({
-    name: {type: String, required: true},
+    name: {type: String, required: true, index:{ unique: true }},
     author: {type: String, required: true},
     genre: {type: String, required: true},
     difficulty: {type: String, required: true},

@@ -1,4 +1,5 @@
 import Song from '../models/Song';
+import findByParam from "./findFunnc";
 
 enum InstrumentList {
     Guitar,
@@ -7,12 +8,6 @@ enum InstrumentList {
 }
 
 exports.instrument_songs = function(req, res) {
-    const param = req.body.instrument;
-    Song.find({instrument: param}, function(err, result): void {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(result);
-        }
-    });
+    const param = {instrument: req.body.instrument};
+    findByParam(Song, res, param);
 };

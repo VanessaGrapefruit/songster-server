@@ -1,5 +1,5 @@
 import Song from '../models/Song';
-
+import findByParam from "./findFunnc";
 enum GenreList {
     Rock,
     Rap,
@@ -12,12 +12,6 @@ enum GenreList {
 }
 
 exports.genre_songs = function(req, res): void {
-    const param = req.body.genre;
-    Song.find({genre: param}, function(err, result) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(result);
-        }
-    });
+    const param = {genre: req.body.genre};
+    findByParam(Song, res, param);
 };
