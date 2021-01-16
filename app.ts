@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/collection', collectionRouter);
+app.use('/', collectionRouter);
 app.use('/user', userRouter);
 
 const uri = 'mongodb+srv://test:test@cluster0.fsbsa.mongodb.net/?retryWrites=true&w=majority';

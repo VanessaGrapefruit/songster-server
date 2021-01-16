@@ -17,7 +17,7 @@ function saveItemIfNotExist(model, modelObj): void {
     });
 }
 
-exports.songs_list = function (req, res): void {
+export function songs_list(req, res): void {
     console.log('get all songs');
     Song.find({}, function (err, result) {
         if (err) {
@@ -28,50 +28,71 @@ exports.songs_list = function (req, res): void {
     });
 };
 
-//http://localhost:3000/collection/songs/:id/?id=5ffdbea015b5b43508c75633
-exports.song_find = function (req, res: express.Response): void {
+//http://localhost:3000/songs/:id/?name=Enter%20Sandman
+export function song_find(req, res: express.Response): void {
     console.log('find one song');
-    const id = req.query.id;
-    console.log(id);
-    Song.findById(id,function(err,result) {
-        const midiData : Buffer = result.midi;
-        const midiConverter = new MidiConverter(midiData);
-        res.header("Access-Control-Allow-Origin: http://localhost:8080");
-        res.send(midiConverter.convert());
-    });
-    // Song.findOne({name: req.body.name, author: req.body.author}, function (err, result) {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         res.send(result);
-    //     }
+    // const id = req.query.id;
+    // console.log(id);
+    // Song.findById(id,function(err,result) {
+    //     const midiData : Buffer = result.midi;
+    //     const midiConverter = new MidiConverter(midiData);
+    //     //res.header("Access-Control-Allow-Origin: http://localhost:8080");
+    //     res.send(midiConverter.convert());
     // });
+    Song.findOne({name: req.query.name}, function (err, result) {
+        if (err) throw err;
+        
+        const midiData = result.midi;
+        const midiConverter = new MidiConverter(midiData);
+        const converted = midiConverter.convert();
+        res.json({ midiData, converted});
+    });
 };
 
-exports.songAdd = function(req, res) {
+export function addSongPage(req: express.Request, res: express.Response) {
+    const url = path.resolve(__dirname,'../views/addSong.html');
+    res.sendFile(url);
+}
 
-    const filePath = path.resolve(__dirname, '../utils/midi-converter/midi/3.mid');
-    const file = fs.readFileSync(filePath);
-
-    let authorObj = {
-        name: req.body.author,
-        genre: req.body.genre,
-    };
+export function addSong(req, res: express.Response) {
+    console.log('add file to db');
+    const midiData = req.file.buffer;
+    const midiConverter = new MidiConverter(midiData);
 
     let songObj = {
         name: req.body.name,
         author: req.body.author,
-        difficulty: req.body.difficulty,
-        text: req.body.difficulty,
         genre: req.body.genre,
-        instrument: req.body.instrument,
-        midi: file
+        midi: midiData,
     };
+    new Song(songObj).save();
+    res.redirect(`/songs/:id/?name=${req.body.name}`);
+}
 
-    saveItemIfNotExist(Author, authorObj);
-    saveItemIfNotExist(Song, songObj);
+// export function addSong(req, res) {
+
+//     const filePath = path.resolve(__dirname, '../utils/midi-converter/midi/3.mid');
+//     const file = fs.readFileSync(filePath);
+
+//     let authorObj = {
+//         name: req.body.author,
+//         genre: req.body.genre,
+//     };
+
+//     let songObj = {
+//         name: req.body.name,
+//         author: req.body.author,
+//         difficulty: req.body.difficulty,
+//         text: req.body.difficulty,
+//         genre: req.body.genre,
+//         instrument: req.body.instrument,
+//         midi: file
+//     };
+
+//     saveItemIfNotExist(Author, authorObj);
+//     saveItemIfNotExist(Song, songObj);
 
 
-    res.send(req.body);
-};
+//     res.send(req.body);
+// };
 

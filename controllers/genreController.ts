@@ -1,17 +1,8 @@
+import { format } from 'path';
 import Song from '../models/Song';
+import { Genre } from '../models/Genre';
 
-enum GenreList {
-    Rock,
-    Rap,
-    Pop,
-    Metal,
-    Jazz,
-    Electronic,
-    Latin,
-    Country
-}
-
-exports.genre_songs = function(req, res): void {
+export function genre_songs(req, res): void {
     const param = req.body.genre;
     Song.find({genre: param}, function(err, result) {
         if (err) {

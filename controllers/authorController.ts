@@ -1,7 +1,7 @@
 import Author from '../models/Author';
 import Song from '../models/Song';
 
-exports.authors_list = function(req, res): void {
+export function authors_list(req, res): void {
     Author.find({}, function (err, result) {
         if (err) {
             throw new Error(err);
@@ -11,7 +11,7 @@ exports.authors_list = function(req, res): void {
     })
 };
 
-exports.author_songs = function(req, res): void {
+export function author_songs(req, res): void {
     Song.find({author: req.body.author}, function (err, result) {
         if (err) {
             throw new Error(err);

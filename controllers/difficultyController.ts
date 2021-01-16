@@ -6,7 +6,7 @@ enum difficulty {
     Advanced
 }
 
-exports.difficulty_songs = function(req, res): void {
+export function difficulty_songs(req, res): void {
     const param = req.body.difficulty;
     Song.find({difficulty: param}, function(err, result) {
         if (err) {
