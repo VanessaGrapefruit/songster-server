@@ -146,7 +146,7 @@ export class TrackConverter {
             const octave = note.name.slice(-1);
             obj[octave] = obj[octave] ? obj[octave] + 1 : 1;
         }
-        const octave = +Object.keys(obj).reduce( (a,b) => obj[a] > obj[b] ? a : b);
+        const octave = +Object.keys(obj).reduce( (a,b) => obj[a] > obj[b] ? a : b, 4);
         
         if (octave < 4) return Clef.Bass;
         return Clef.Treble;
