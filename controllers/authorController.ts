@@ -1,13 +1,23 @@
 import Author from '../models/Author';
 import Song from '../models/Song';
-import findByParam from './findFunnc'
 
-exports.authors_list = function(req, res): void {
-    findByParam(Author, res);
+export function authors_list(req, res): void {
+    Author.find({}, function (err, result) {
+        if (err) {
+            throw new Error(err);
+        } else {
+            res.json(result);
+        }
+    })
 };
 
-exports.author_songs = function(req, res): void {
-    const objParam = {author: req.body.author}
-    findByParam(Song, res, objParam);
+export function author_songs(req, res): void {
+    Song.find({author: req.body.author}, function (err, result) {
+        if (err) {
+            throw new Error(err);
+        } else {
+            res.send(result)
+        }
+    })
 };
 

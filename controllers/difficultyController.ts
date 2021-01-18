@@ -1,5 +1,4 @@
 import Song from '../models/Song';
-import findByParam from "./findFunnc";
 
 enum difficulty {
     Beginner,
@@ -7,7 +6,13 @@ enum difficulty {
     Advanced
 }
 
-exports.difficulty_songs = function(req, res): void {
-    const param = {difficulty: req.body.difficulty};
-    findByParam(Song, res, param);
+export function difficulty_songs(req, res): void {
+    const param = req.body.difficulty;
+    Song.find({difficulty: param}, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(result);
+        }
+    });
 };

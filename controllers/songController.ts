@@ -1,63 +1,69 @@
 import Song from '../models/Song';
 import express from 'express';
-import * as fs from 'fs';
-import Author from '../models/Author';
 import path from "path";
-import {MidiConverter} from '../utils/midi-converter/midiConverter';
-import findByParam from "./findFunnc";
+import { MidiConverter } from '../utils/midi-converter/midiConverter';
+import { SearchOptions } from '../viewModels/SearchOptions';
 
-function SaveSongInDB(model, modelObj) {
-    new model(modelObj).save((function (err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(doc)
+function saveItemIfNotExist(model, modelObj): void {
+    model.findOne({name: modelObj.name}, async function (err, mod) {
+        if (err) console.log(err);
+        if (!mod) {
+            const doc = await new model(modelObj);
+            await doc.save().then(savedDoc => {
+                console.log(savedDoc);
+            });
         }
-    }));
+    });
 }
 
-exports.songs_list = function (req, res): void {
-    findByParam(Song, res);
+//http://localhost:3000/songs/?name=Enter Sandman&author=Metallica
+export function FindSongs(req: express.Request, res: express.Response): void {
+    console.log('Get songs');
+    const options: SearchOptions = req.query;
+    Song.find(options,{name:1,author:1,difficulty:1})
+        .exec(function (err, result) {
+            if (err) res.sendStatus(404);
+
+            res.send(result);
+        });
 };
 
-//http://localhost:3000/collection/songs/:id/?name=Omen&author=The%20Progidy
-exports.song_find = function (req, res: express.Response): void {
-    const name = req.query.name;
-    const author = req.query.author;
-    console.log(name, author);
-    Song.findOne({name: name, author: author}, function (err, result) {
-        console.log(result)
-        // const midiData: Buffer = result.midi;
-        // const midiConverter = new MidiConverter(midiData);
-        // res.header("Access-Control-Allow-Origin: http://localhost:8080");
-        // res.send(midiConverter.convert());
-        res.send(result)
+//http://localhost:3000/songs/id/?id=6000521b6a4f1508a4233e03
+export function FindSongById(req:express.Request, res: express.Response) {
+    console.log('Find song by id');
+
+    const id = req.query.id;
+    Song.findById(id,function(err,result) {
+        if(err || !result) res.sendStatus(404);
+
+        const midiData = result.midi;
+        const converted = new MidiConverter(midiData).convert();
+        converted.Name = result.name;
+        converted.Author = result.author;
+        converted.Difficulty = result.difficulty;
+
+        res.json({ midiData, converted });
     });
 };
 
-exports.songAdd = function (req, res) {
+export function addSongPage(req: express.Request, res: express.Response) {
+    const url = path.resolve(__dirname,'../views/addSong.html');
+    res.sendFile(url);
+}
 
-    const filePath = path.resolve(__dirname, '../utils/midi-converter/midi/2.mid');
-    const file = fs.readFileSync(filePath);
-
-    let authorObj = {
-        name: req.body.author,
-        genre: req.body.genre,
-    };
+export async function addSong(req, res: express.Response) {
+    console.log('add file to db');
+    const midiData = req.file.buffer;
 
     let songObj = {
         name: req.body.name,
         author: req.body.author,
-        difficulty: req.body.difficulty,
-        text: req.body.difficulty,
         genre: req.body.genre,
-        instrument: req.body.instrument,
-        midi: file
+        midi: midiData,
     };
-
-    SaveSongInDB(Author, authorObj);
-    SaveSongInDB(Song, songObj);
-
-    res.send(req.body);
-};
+    const song = new Song(songObj);
+    await song.save();
+    
+    res.redirect(`/songs/id/?id=${song.id}`);
+}
 
