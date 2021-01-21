@@ -13,7 +13,6 @@ app.use(cors({
     origin: 'http://localhost:8080'
 }));
 
-// шаблонизатор (можно будет выбрать другой)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
 
