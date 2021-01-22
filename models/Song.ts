@@ -6,7 +6,7 @@ const SongSchema = new Schema({
     author: {type: String, required: true},
     genre: {type: String, required: true},
     difficulty: {type: String},
-    instrument: {type: String},
+    instruments: {type: [String]},
     // tracks: [{type: Object, required: true}], //[{player: name, track: track}]
     text: String,
     midi: {type: Buffer, required: true},
