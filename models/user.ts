@@ -2,8 +2,6 @@ import * as mongoose from 'mongoose';
 import {isEmail} from 'validator';
 import bcrypt from 'bcrypt';
 
-const Schema = mongoose.Schema;
-
 const userSchema = new mongoose.Schema({
     email: {
         type: String,

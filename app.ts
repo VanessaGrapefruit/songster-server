@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use('/', collectionRouter);
 app.use('/', authRouter);
 
+
 const uri = 'mongodb+srv://test:test@cluster0.fsbsa.mongodb.net/?retryWrites=true&w=majority';
 mongoose
     .connect(uri, {

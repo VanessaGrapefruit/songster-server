@@ -1,7 +1,7 @@
 export interface SearchOptions {
-    name?: string;
-    author?: string;
+    //name?: string;
+    //author?: string;
     genre?: string
-    instruments?: string[];
+    //instruments?: string[];
     difficulty?: string;
 }
