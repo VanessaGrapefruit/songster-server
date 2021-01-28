@@ -1,4 +1,4 @@
-import User from '../models/User1';
+import User from '../models/User';
 import jwt from 'jsonwebtoken';
 
 const handleErrors = (err) => {
