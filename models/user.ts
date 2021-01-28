@@ -16,8 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter a password'],
         minlength: [6, 'Minimum password length is 6 characters'],
-    },
-    favoriteSongs: [{type:Schema.Types.ObjectId, index: { unique: true}}]
+    }
 });
 
 userSchema.pre('save', async function (next) {
