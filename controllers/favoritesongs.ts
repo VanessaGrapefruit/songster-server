@@ -1,4 +1,4 @@
-import User from '../models/User';
+import User from '../models/User1';
 import Song from '../models/Song';
 import mongoose from "mongoose";
 
