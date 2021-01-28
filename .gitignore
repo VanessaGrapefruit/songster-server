@@ -1,6 +1,5 @@
 node_modules
 .js
 dist
-views
 public
 storage
