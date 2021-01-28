@@ -9,9 +9,8 @@ import cookieParser from 'cookie-parser';
 import {requireAuth, checkUser} from './middleware/middleware'
 
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:8080'
-}));
+app.use(cors());
+app.options('*', cors());
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
