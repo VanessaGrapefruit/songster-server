@@ -84,7 +84,7 @@ export function addSongPage(req: express.Request, res: express.Response) {
     res.sendFile(url);
 }
 
-export async function addSong(req, res: express.Response) {
+export async function addSong(req: express.Request, res: express.Response) {
     console.log('add file to db');
     const midiData = req.file.buffer;
     const midi = new Midi(midiData);
@@ -94,12 +94,16 @@ export async function addSong(req, res: express.Response) {
         name: req.body.name,
         author: req.body.author,
         genre: req.body.genre,
+        difficulty: req.body.difficulty,
         midi: midiData,
         instruments
     };
+
     const song = new Song(songObj);
     await song.save();
-    
-    res.redirect(`/songs/id/?id=${song.id}`);
+    const songID = await song.id;
+
+    res.json({ songID });
+    //res.redirect(`/songs/id/?id=${song.id}`);
 }
 
