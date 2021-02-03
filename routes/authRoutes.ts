@@ -1,15 +1,15 @@
-import {Router} from 'express';
-import {singup_get, login_get, singup_post, login_post, logout_get} from '../controllers/authController';
-import {favorite_add, favorite_delete, favorite_songs_list} from '../controllers/favoritesongs'
-const router = Router();
+import {Router} from "express"
+import * as songControllers from "../controllers/songController"
+import multer from 'multer'
 
-router.get('/signup', singup_get);
-router.get('/login', login_get);
-router.post('/signup', singup_post);
-router.post('/login', login_post);
-router.get('/logout', logout_get);
-router.post('/favorite-songs-add', favorite_add);
-router.post('/favorite-songs-delete', favorite_delete);
-router.get('/favorite-songs', favorite_songs_list);
+const upload = multer()
+const router = Router()
 
-export default router;
+router.get('/songs/', songControllers.findSongs)
+router.get('/songs/id/', songControllers.findSongById)
+router.post('/addSong/', upload.single('midi'), songControllers.addSong)
+router.get('/addSong/', songControllers.addSongPage)
+
+export default router
+
+
