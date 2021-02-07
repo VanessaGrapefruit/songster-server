@@ -8,10 +8,12 @@ export class TrackConverter {
     private bpm: number;
     private ppq: number;
     private size: Size;
+    private clef: Clef;
     private Measures: MeasureDisplay[];
     private measureDurationTicks: number;
     private tickDuration: number;
     private measureDuration: number;
+    private currentMeasureId: number;
 
     constructor(track: Track,bpm: number,timeSignature: number[],ppq: number) {
         this.track = track;
@@ -21,6 +23,7 @@ export class TrackConverter {
             Count: timeSignature[0],
             Per: timeSignature[1],
         }
+        this.clef = this.getClef(this.track.notes);
         this.Measures = [];
         this.measureDurationTicks = 4 * this.ppq * this.size.Count / this.size.Per;
         this.tickDuration = 60000 / (this.bpm * this.ppq);
@@ -29,29 +32,39 @@ export class TrackConverter {
 
     convert() : TrackDisplay {
         const notes = this.track.notes;
+        this.clef = this.getClef(notes);
         return {
             Instrument: this.track.instrument.name,
-            //Name: this.track.name,
             Bpm: this.bpm,
             Size: this.size,
             Key: NoteName.C,
-            Clef: this.getClef(this.track.notes),
+            Clef: this.clef,
+            //Clef: this.getClef(this.track.notes),
             Measures: this.convertNotes(notes)
         }
     }
 
     private convertNotes(notes: Note[]) {
-        let id = 0;
-        let measure = this.getEmptyMeasure(id);
+        this.currentMeasureId = 0;
+        let measure = this.getEmptyMeasure(this.currentMeasureId);
         let prevTicks = 0;
         let prevNote: Note;
         for (const note of notes) {
+            while (note.ticks - prevTicks > this.measureDurationTicks) {
+                if (!measure.Chords.length) {
+                    this.appendPauseToMeasure(measure,this.measureDurationTicks);
+                }
+                prevTicks += this.measureDurationTicks;
+                measure = this.nextMeasure(measure);
+                this.appendPauseToMeasure(measure,this.measureDurationTicks);
+            }
+
             const delta = note.ticks - prevTicks;
-            if (delta > 0) {
-                const noteDisplay = this.getNote(note);
-                noteDisplay.Duration = this.getNoteDuration(delta);
-                noteDisplay.IsPause = true;
-                measure.Chords.push(this.getChord(noteDisplay));
+            if (delta > 0 && note.ticks <= (this.currentMeasureId + 1) * this.measureDurationTicks) {
+                this.appendPauseToMeasure(measure,delta);
+            } else if (delta > 0) {
+                measure = this.nextMeasure(measure);
+                this.appendPauseToMeasure(measure,delta);
             }
 
             if(prevNote && prevNote.ticks === note.ticks) {
@@ -64,10 +77,8 @@ export class TrackConverter {
                 continue;
             }
 
-            if (note.ticks >= (id + 1) * this.measureDurationTicks) {
-                this.Measures.push(measure);
-                id += 1;
-                measure = this.getEmptyMeasure(id);
+            if (note.ticks >= (this.currentMeasureId + 1) * this.measureDurationTicks) {
+                measure = this.nextMeasure(measure);
             }
 
             const noteDisplay = this.getNote(note);
@@ -81,12 +92,27 @@ export class TrackConverter {
         return this.Measures;
     }
 
-    getNote(note: Note) : NoteDisplay {
+    appendPauseToMeasure(measure: MeasureDisplay, ticks: number) {
+        const noteDisplay = this.getNote(undefined,true);
+        const noteDuration = this.getNoteDuration(ticks);
+        noteDisplay.Duration = noteDuration;
+        noteDisplay.IsDotted = noteDuration.toString().includes('d');
+        noteDisplay.IsPause = true;
+        measure.Chords.push(this.getChord(noteDisplay));
+    }
+
+    getNote(note: Note, isDefault = false) : NoteDisplay {
         let name : NoteName,
             alteration : Alteration | undefined,
             octave : number;
-        ({name, alteration, octave} = this.getNoteFromName(note.name));
-        const noteDuration = this.getNoteDuration(note.durationTicks);
+        let noteDuration : Duration;
+        if (isDefault) {
+            ({name, alteration, octave} = this.getClefDefaultNote());
+            noteDuration = Duration.Quarter;
+        } else {
+            ({name, alteration, octave} = this.getNoteFromName(note.name));
+            noteDuration = this.getNoteDuration(note.durationTicks);
+        }
         const isDotted = noteDuration.toString().includes('d');
         return {
             Name: name,
@@ -96,6 +122,18 @@ export class TrackConverter {
             IsPause: false,
             IsDotted : isDotted,
         }
+    }
+
+    getClefDefaultNote() {
+        let name: NoteName, octave: number
+        if (this.clef == Clef.Treble) {
+            name = NoteName.G;
+            octave = 4;
+        } else {
+            name = NoteName.F;
+            octave = 3;
+        }
+        return {name,alteration: undefined,octave};
     }
 
     getChord(...notes: NoteDisplay[]) : ChordDisplay {
@@ -108,6 +146,13 @@ export class TrackConverter {
             Time: id*this.measureDuration,
             Chords: []
         }
+    }
+
+    nextMeasure(measure: MeasureDisplay) {
+        this.Measures.push(measure);
+        this.currentMeasureId += 1;
+        measure = this.getEmptyMeasure(this.currentMeasureId);
+        return measure;
     }
 
     getNoteDuration(durationTicks: number) : Duration {
