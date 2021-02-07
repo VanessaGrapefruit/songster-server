@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es5",
     "moduleResolution": "node",
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist",
+    "skipLibCheck": true
   },
-  "lib": ["es2015"]
+  "exclude": [
+    "node_modules"
+  ]
 }
